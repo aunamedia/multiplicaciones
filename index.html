@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <style>
+        body {
+            margin: 50px;
+        }
+    </style>
+<script>
+
+    var meta = 10
+    var tiempo_uni = 7
+
+    var timeout
+
+
+    var cont = 0
+    var nuevo = true
+    var num1, num2, label_op
+    // esta función se encarga de sacar algo por pantalla (incluso en desarrollo por console.log)
+    function s(t){
+        //console.log(t)
+        document.getElementById("salida").innerHTML = t+"<br>"+document.getElementById("salida").innerHTML;
+    }
+
+    function poner_operacion_actual(t){
+        document.getElementById("op_actual").innerHTML = t;
+    }
+
+
+
+    // esta función obtiene un número aleatorio del 0 al 9
+    function num_ale(){
+        return Math.floor(Math.random()*11)
+    }
+
+    // esta función comienza una nueva operacíon
+    function op(){
+        if(timeout != undefined){
+            clearTimeout(timeout)
+        }
+        timeout = setTimeout(function (){
+            if(cont > 0 ) fallo()
+        }, tiempo_uni*1000);
+
+        document.getElementById("meta").innerHTML = meta
+        document.getElementById("aciertos").innerHTML = cont
+        document.getElementById("score").innerHTML = Math.max(cont, document.getElementById("score").innerText).toString()
+        document.getElementById("campo").value = ""
+        if(nuevo){
+            num1 = num_ale()
+            num2 = num_ale()
+        }
+        label_op = num1 + " x " + num2 + " = ";
+        poner_operacion_actual(label_op)
+        //s(label_op)
+        //return num1 + " x " + num2;
+    }
+
+    
+    // lo que ocurrirá cada vez que se pulse una tecla
+    function pulsacionTecla (event){
+        //const keyName = event.key;
+        // console.log(event)
+        // s(event.key)
+        // s(event.keyCode)
+        // s(event.code)
+        // if(event.key == event.key*1){
+        // }
+        comprobar_resultado();
+        //comprobar_resultado();
+        //alert('keydown event\n\n' + 'key: ' + keyName);
+    }
+    document.addEventListener('keyup', pulsacionTecla);
+
+    //comprobación del resultado
+    function comprobar_resultado(){
+
+        texto_res = (num1*num2).toString()
+        valor_introducido = document.getElementById("campo").value
+
+        // comprobamos que haya acertado o que esté escribiendo el resultado bueno desde el principio
+        if(valor_introducido == texto_res){
+            ok()
+        } else if(texto_res.indexOf(valor_introducido) != 0) {
+            fallo(valor_introducido)
+        }
+    }
+
+    function fallo(valor_introducido){
+        cont = 0
+        if(valor_introducido == undefined) {
+            poner_estado("tiempo")
+            s(cont+") &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ---- TIEMPO AGOTADO ")
+        } else {
+            poner_estado("error")
+            s(cont+") &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+label_op+ " "+valor_introducido+" <---- ERROR ")
+        }
+        nuevo = false
+        op()
+        var element = document.getElementById("cabecera");
+        element.classList.add("bg-danger");
+        element.classList.remove("bg-dark");
+        element.classList.remove("bg-success");
+    }
+
+    function ok(){
+        poner_estado("ok")
+        cont ++
+        s(cont+") &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+label_op+ " " + num1*num2)
+        nuevo = true
+        op()
+        if(cont >=meta){
+            poner_estado("fin")
+            s("---------------------------")
+            s("LO HAS CONSEGUIDO CHAVAL!!!")
+            s("---------------------------")
+            var element = document.getElementById("cabecera");
+            element.classList.add("bg-success");
+            element.classList.remove("bg-dark");
+            element.classList.remove("bg-danger");
+        } else {
+            var element = document.getElementById("cabecera");
+            element.classList.add("bg-dark");
+            element.classList.remove("bg-danger");
+            element.classList.remove("bg-success");
+        }
+    }
+
+    function poner_estado(est){
+        document.getElementById("eti_tiempo").style.display = "none";
+        document.getElementById("eti_comienza").style.display = "none";
+        document.getElementById("eti_error").style.display = "none";
+        document.getElementById("eti_ok").style.display = "none";
+        document.getElementById("eti_fin").style.display = "none";
+        document.getElementById("eti_"+est).style.display = "block";
+    }
+    
+
+    function inicio(){
+//        s(op())
+        poner_estado("comienza")
+        op()
+    }
+
+    window.onload = function() {
+        inicio()
+    };
+
+</script>
+</head>
+<body>
+ 
+
+ 
+<nav id="cabecera" class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">Tablas de Multiplicar   </span>
+    </div>
+</nav>
+<span class="badge bg-primary"><span id="aciertos">0</span> Aciertos</span>
+<span class="badge bg-secondary">Record: <span id="score">0</span></span>
+<span class="badge bg-light text-dark">META: <span id="meta">0</span> aciertos</span>
+
+<br>
+<br>
+<div class="input-group mb-3">
+    <span class="input-group-text" id="op_actual">9 x 8 = </span> 
+    <input type="text" id="campo" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+<span id="eti_tiempo" class="badge bg-warning">TIEMPO AGOTADO</span>
+<span id="eti_error" class="badge bg-danger">ERROR</span>
+<span id="eti_ok" class="badge bg-success">OK</span>
+<span id="eti_fin" class="badge bg-success">ENHORA BUENA.... LO HAS CONSEGUIDO</span>
+<span id="eti_comienza" class="badge bg-primary">COMIENZA</span>
+
+
+
+<div class="mb-3">
+    <label for="salida" class="form-label">Resultados</label>
+    <div id="salida" class="form-control" style="height: 150px; overflow: auto;"></div>
+</div>
+
+
+</body>
+</html>
