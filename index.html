@@ -14,8 +14,8 @@
     </style>
 <script>
 
-    var numbers1 = [0,1,2,3,4,5,6,7,8,9]
-    var numbers2 = [0,1,2,3,4,5,6,7,8,9]
+    var numbers1 = [0,1,2,3,4,5,6,7,8,9,10]
+    var numbers2 = [0,1,2,3,4,5,6,7,8,9,10]
 
     var meta = 20
     var tiempo_uni = 7
@@ -39,8 +39,9 @@
 
 
     // esta función obtiene un número aleatorio del 0 al 9
-    function num_ale(){
-        return Math.floor(Math.random()*11)
+    function num_ale(lista){
+        var cant = lista.length
+        return lista[Math.floor(Math.random()*cant)]
     }
 
     // esta función comienza una nueva operacíon
@@ -57,8 +58,8 @@
         document.getElementById("score").innerHTML = Math.max(cont, document.getElementById("score").innerText).toString()
         document.getElementById("campo").value = ""
         if(nuevo){
-            num1 = num_ale()
-            num2 = num_ale()
+            num1 = num_ale(numbers1)
+            num2 = num_ale(numbers2)
         }
         label_op = num1 + " x " + num2 + " = ";
         poner_operacion_actual(label_op)
@@ -147,9 +148,34 @@
     
 
     function inicio(){
-//        s(op())
+        document.getElementById("btn_numeros1").addEventListener("click", function () {
+            numbers1 = asignacion_numeros(1, "Lista los PRIMEROS números de la multiplicación (separados por coma, por ejemplo: 0,1,2,3,4,5,6,7,8,9,10)")
+            resetear()
+        })
+        document.getElementById("btn_numeros2").addEventListener("click", function () {
+            numbers2 = asignacion_numeros(2, "Lista los SEGUNDOS números de la multiplicación (separados por coma, por ejemplo: 0,1,2,3,4,5,6,7,8,9,10)")
+            resetear()
+        })
+        
+        resetear()
+    }
+    
+    function resetear (){        
         poner_estado("comienza")
+        document.getElementById("score").innerText = "0"
+        cont = 0
         op()
+    }
+
+    function asignacion_numeros(n, t){
+        do {
+            _lista = prompt(t)
+            if(_lista == null) _lista = ""
+        } while (isNaN(_lista.split(",").join("")))
+        var lista = _lista.length == 0 ? [0,1,2,3,4,5,6,7,8,9,10] : _lista.split(",")
+        document.getElementById("numeros"+n).innerHTML = lista
+        s("CAMBIO DE TABLA "+n+" A: "+lista)
+        return lista
     }
 
     window.onload = function() {
@@ -190,6 +216,9 @@
     <div id="salida" class="form-control" style="height: 150px; overflow: auto;"></div>
 </div>
 
+
+<span id="btn_numeros1" class="badge bg-light text-dark">Números1 : <span id="numeros1"></span> </span>
+<span id="btn_numeros2" class="badge bg-light text-dark">Números2 : <span id="numeros2"></span></span>
 
 </body>
 </html>
