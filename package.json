@@ -1,0 +1,25 @@
+{
+  "name": "tablas_multiplicar",
+  "version": "1.0.0",
+  "description": "Herramienta de prácticas de multiplicación",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aunamedia/multiplicaciones.git"
+  },
+  "keywords": [
+    "multiplicaciones"
+  ],
+  "author": "Antonio García",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aunamedia/multiplicaciones/issues"
+  },
+  "homepage": "https://github.com/aunamedia/multiplicaciones#readme",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
